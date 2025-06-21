@@ -1,5 +1,3 @@
-// books.interface.ts
-
 import { Model } from "mongoose";
 
 export interface IBook {

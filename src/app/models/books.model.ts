@@ -1,21 +1,19 @@
-//books.model.ts
-
 import { model, Schema } from 'mongoose'
 import { IBook, IBookModel } from '../interfaces/books.interface'
 
 const bookSchema = new Schema<IBook>({
-    title: { type: String, required: true },
-    author: { type: String, required: true },
-    genre: { type: String, required: true, enum: ['FICTION', 'NON_FICTION', 'SCIENCE', 'HISTORY', 'BIOGRAPHY', 'FANTASY'] },
-    isbn: { type: String, required: true, unique: true },
-    description: String,
-    copies: { type: Number, required: true, min: [0, 'Copies must be a positive number'] },
-    available: { type: Boolean, default: true }
+  title: { type: String, required: true },
+  author: { type: String, required: true },
+  genre: { type: String, required: true, enum: ['FICTION', 'NON_FICTION', 'SCIENCE', 'HISTORY', 'BIOGRAPHY', 'FANTASY'] },
+  isbn: { type: String, required: true, unique: true },
+  description: String,
+  copies: { type: Number, required: true, min: [0, 'Copies must be a positive number'] },
+  available: { type: Boolean, default: true }
 },
-    {
-        versionKey: false,
-        timestamps: true
-    }
+  {
+    versionKey: false,
+    timestamps: true
+  }
 )
 
 bookSchema.statics.decreaseCopies = async function (
