@@ -33,8 +33,8 @@ This project allows you to manage books and borrowing operations, with full vali
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/library-management-api.git
-cd library-management-api
+git clone https://github.com/AnsarulIslam10/B5-Assignment-3.git
+cd B5-Assignment-3
 ````
 
 ### 2. Install dependencies
@@ -180,10 +180,3 @@ Returns:
 ```
 
 ---
-
-## 🧪 Future Improvements
-
-* User authentication
-* Borrow limits per user
-* Book return feature
-* Pagination for books list
