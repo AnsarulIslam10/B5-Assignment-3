@@ -16,6 +16,8 @@ const bookSchema = new Schema<IBook>({
   }
 )
 
+// static method
+
 bookSchema.statics.decreaseCopies = async function (
   bookId: string,
   quantity: number
@@ -33,5 +35,21 @@ bookSchema.statics.decreaseCopies = async function (
   return book;
 };
 
+bookSchema.pre('findOneAndUpdate', function (next){
+  const update = this.getUpdate() as any;
+  if (update.copies !== undefined) {
+    update.available = update.copies === 0 ? false : true;
+    this.setUpdate(update)
+  }
+  next()
+})
+
+bookSchema.post('findOneAndUpdate', function (doc) {
+  if (doc) {
+    console.log(
+      `Book "${doc.title}" updated – copies now ${doc.copies}`
+    );
+  }
+});
 
 export const Book = model<IBook, IBookModel>("Book", bookSchema)

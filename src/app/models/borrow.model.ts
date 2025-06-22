@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IBorrow } from "../interfaces/borrow.interface";
+import { Book } from "./books.model";
 
 const borrowSchema = new Schema<IBorrow>(
     {
@@ -11,5 +12,10 @@ const borrowSchema = new Schema<IBorrow>(
         versionKey: false,
         timestamps: true
     }
+);
+
+borrowSchema.path('dueDate').validate(
+    (v: Date) => v.getTime() > Date.now(),
 )
+
 export const Borrow = model<IBorrow>('Borrow', borrowSchema);

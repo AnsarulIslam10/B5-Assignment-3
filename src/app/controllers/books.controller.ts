@@ -74,7 +74,7 @@ booksRoutes.get('/:bookId', async (req: Request, res: Response) => {
 })
 
 //Update single book
-booksRoutes.patch('/:bookId', async (req: Request, res: Response) => {
+booksRoutes.put('/:bookId', async (req: Request, res: Response) => {
     try {
         const bookId = req.params.bookId
         const body = req.body
