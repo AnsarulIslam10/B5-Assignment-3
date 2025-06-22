@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose'
+import { model, Query, Schema, UpdateQuery } from 'mongoose'
 import { IBook, IBookModel } from '../interfaces/books.interface'
 
 const bookSchema = new Schema<IBook>({
@@ -21,7 +21,7 @@ const bookSchema = new Schema<IBook>({
 bookSchema.statics.decreaseCopies = async function (
   bookId: string,
   quantity: number
-) {
+): Promise<IBook> {
   const book = await this.findById(bookId);
   if (!book) throw new Error('Book not found');
   if (book.copies < quantity) throw new Error('Not enough copies available');
@@ -35,8 +35,8 @@ bookSchema.statics.decreaseCopies = async function (
   return book;
 };
 
-bookSchema.pre('findOneAndUpdate', function (next){
-  const update = this.getUpdate() as any;
+bookSchema.pre<Query<IBook, IBook>>('findOneAndUpdate', function (next){
+  const update = this.getUpdate() as UpdateQuery<IBook>;
   if (update.copies !== undefined) {
     update.available = update.copies === 0 ? false : true;
     this.setUpdate(update)

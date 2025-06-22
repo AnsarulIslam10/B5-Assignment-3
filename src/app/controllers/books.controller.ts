@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express'
 import { Book } from '../models/books.model'
+import { FilterQuery, SortOrder } from 'mongoose'
+import { IBook } from '../interfaces/books.interface'
 
 export const booksRoutes = express.Router()
 
@@ -27,12 +29,12 @@ booksRoutes.get('/', async (req: Request, res: Response) => {
     try {
         const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query
 
-        const query: any = {};
+        const query: FilterQuery<IBook> = {};
         if (filter) {
             query.genre = filter;
         }
 
-        const sortOption: any = {};
+        const sortOption: Record<string, SortOrder> = {};
         sortOption[sortBy as string] = sort === 'asc' ? 1 : -1;
 
         const books = await Book.find(query).sort(sortOption).limit(Number(limit))

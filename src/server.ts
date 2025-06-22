@@ -18,6 +18,7 @@ async function main() {
         server = app.listen(PORT, () => {
             console.log(`App is listening on port ${PORT}`)
         })
+        void server
     } catch (error) {
         console.error('Faild to start the server', (error as Error).message);
         process.exit(1)
