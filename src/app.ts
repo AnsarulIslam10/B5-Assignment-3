@@ -1,8 +1,11 @@
 import { borrowRoutes } from './app/controllers/borrow.controller';
+import cors from 'cors';
 import express, { Application, Request, Response } from 'express'
 import { booksRoutes } from './app/controllers/books.controller'
 
 const app: Application = express()
+//cors
+app.use(cors());
 
 // Middleware
 app.use(express.json())

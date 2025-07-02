@@ -4,6 +4,7 @@ import { IBook, IBookModel } from '../interfaces/books.interface'
 const bookSchema = new Schema<IBook>({
   title: { type: String, required: true },
   author: { type: String, required: true },
+  image: { type: String, required: true },
   genre: { type: String, required: true, enum: ['FICTION', 'NON_FICTION', 'SCIENCE', 'HISTORY', 'BIOGRAPHY', 'FANTASY'] },
   isbn: { type: String, required: true, unique: true },
   description: String,
