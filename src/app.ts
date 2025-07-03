@@ -5,7 +5,9 @@ import { booksRoutes } from './app/controllers/books.controller'
 
 const app: Application = express()
 //cors
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5173', 'https://library-management-system-frontend-eight.vercel.app']
+}));
 
 // Middleware
 app.use(express.json())
