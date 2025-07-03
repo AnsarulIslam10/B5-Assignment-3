@@ -38,18 +38,34 @@ exports.booksRoutes.post('/', (req, res) => __awaiter(void 0, void 0, void 0, fu
 //get all books with optional filter and sortion
 exports.booksRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query;
+        const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10', page = '1' } = req.query;
         const query = {};
         if (filter) {
             query.genre = filter;
         }
         const sortOption = {};
         sortOption[sortBy] = sort === 'asc' ? 1 : -1;
-        const books = yield books_model_1.Book.find(query).sort(sortOption).limit(Number(limit));
+        const limitNum = Number(limit);
+        const pageNum = Number(page);
+        const skip = (pageNum - 1) * limitNum;
+        // const books = await Book.find(query).sort(sortOption).limit(Number(limit))
+        const [books, total] = yield Promise.all([
+            books_model_1.Book.find(query).sort(sortOption).skip(skip).limit(limitNum),
+            books_model_1.Book.countDocuments(query)
+        ]);
+        const totalPages = Math.ceil(total / limitNum);
         res.status(200).json({
             success: true,
             message: "Books retrieved successfully",
-            data: books
+            data: {
+                books,
+                pagination: {
+                    total,
+                    totalPages,
+                    currentPage: pageNum,
+                    limit: limitNum
+                }
+            }
         });
     }
     catch (error) {

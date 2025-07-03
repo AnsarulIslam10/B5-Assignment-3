@@ -27,22 +27,36 @@ booksRoutes.post('/', async (req: Request, res: Response) => {
 //get all books with optional filter and sortion
 booksRoutes.get('/', async (req: Request, res: Response) => {
     try {
-        const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query
+        const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10', page = '1' } = req.query
 
         const query: FilterQuery<IBook> = {};
         if (filter) {
             query.genre = filter;
         }
-
         const sortOption: Record<string, SortOrder> = {};
         sortOption[sortBy as string] = sort === 'asc' ? 1 : -1;
 
-        const books = await Book.find(query).sort(sortOption).limit(Number(limit))
+        const limitNum = Number(limit);
+        const pageNum = Number(page);
+        const skip = (pageNum - 1) * limitNum;
 
+        const [books, total] = await Promise.all([
+            Book.find(query).sort(sortOption).skip(skip).limit(limitNum),
+            Book.countDocuments(query)
+        ])
+        const totalPages = Math.ceil(total / limitNum);
         res.status(200).json({
             success: true,
             message: "Books retrieved successfully",
-            data: books
+             data: {
+                books,
+                pagination: {
+                    total,
+                    totalPages,
+                    currentPage: pageNum,
+                    limit: limitNum
+                }
+            }
         })
     } catch (error) {
         res.status(500).json({
