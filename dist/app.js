@@ -9,7 +9,9 @@ const express_1 = __importDefault(require("express"));
 const books_controller_1 = require("./app/controllers/books.controller");
 const app = (0, express_1.default)();
 //cors
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: ['http://localhost:5173', 'https://library-management-system-frontend-eight.vercel.app']
+}));
 // Middleware
 app.use(express_1.default.json());
 // Routes

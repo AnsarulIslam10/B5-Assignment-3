@@ -30,7 +30,12 @@ borrowRoutes.post('/', async (req: Request, res: Response) => {
 
 borrowRoutes.get('/', async (req: Request, res: Response) => {
   try {
-    const summary = await Borrow.aggregate([
+    const { page = '1', limit = '10' } = req.query;
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const result = await Borrow.aggregate([
       {
         $group: {
           _id: '$book',
@@ -57,14 +62,36 @@ borrowRoutes.get('/', async (req: Request, res: Response) => {
             isbn: '$book.isbn'
           }
         }
+      },
+      {
+        $facet: {
+          data: [
+            { $skip: skip },
+            { $limit: limitNum }
+          ],
+          totalCount: [
+            { $count: 'count' }
+          ]
+        }
       }
 
     ]);
+    const borrowData = result[0].data;
+    const total = result[0].totalCount[0]?.count || 0;
+    const totalPages = Math.ceil(total / limitNum);
     res.status(200).json({
       success: true,
       message: 'Borrowed books summary retrieved successfully',
-      data: summary
-    })
+      data: {
+        borrows: borrowData,
+        pagination: {
+          total,
+          totalPages,
+          currentPage: pageNum,
+          limit: limitNum
+        }
+      }
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
